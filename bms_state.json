@@ -14,7 +14,7 @@
       "date": "20260807",
       "cat": "CLASSIC",
       "price": "61.74",
-      "status": "3"
+      "status": "2"
     }
   },
   "dates": {
@@ -26,5 +26,5 @@
     "20260810": "NOT_OPEN",
     "20260811": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-04 21:41:53"
+  "last_heartbeat": "2026-08-04 22:48:33"
 }
