@@ -2,9 +2,15 @@ name: BMS Ticket Checker
 
 on:
   schedule:
-    # Every 30 minutes
-    - cron: '*/30 * * * *'
-  workflow_dispatch:  # Manual trigger button
+    # Every 10 minutes
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+    inputs:
+      send_heartbeat:
+        description: 'Send heartbeat email on manual run'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   check-tickets:
@@ -34,6 +40,7 @@ jobs:
           BMS_DATES: ${{ vars.BMS_DATES }}
           BMS_THEATRE: ${{ vars.BMS_THEATRE }}
           BMS_TIME: ${{ vars.BMS_TIME }}
+          BMS_SEND_HEARTBEAT: ${{ github.event.inputs.send_heartbeat || 'false' }}
         run: uv run main.py
 
       - name: Commit updated state

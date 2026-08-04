@@ -32,8 +32,10 @@ CONFIG = {
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 RESEND_TO_EMAIL = os.getenv("RESEND_TO_EMAIL", "")
 RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "aviiciii@resend.dev")
+BMS_SEND_HEARTBEAT = os.getenv("BMS_SEND_HEARTBEAT", "false").lower() == "true"
 
 STATE_FILE = "bms_state.json"
+HEARTBEAT_INTERVAL_MINUTES = 30
 
 # ──────────────────────────────────────────────────────────────────────
 # CONSTANTS
@@ -391,10 +393,10 @@ def _cat_status_label(status):
 
 def send_email(subject, changes, shows, movie_info):
     api_key = RESEND_API_KEY.strip()
-    to = RESEND_TO_EMAIL.strip()
+    to_emails = [e.strip() for e in RESEND_TO_EMAIL.split(",") if e.strip()]
     frm = RESEND_FROM_EMAIL.strip() or "onboarding@resend.dev"
 
-    if not api_key or not to:
+    if not api_key or not to_emails:
         print("  ⚠️  Skipping email — RESEND_API_KEY or RESEND_TO_EMAIL not set.")
         return
 
@@ -505,20 +507,85 @@ def send_email(subject, changes, shows, movie_info):
                 "Content-Type": "application/json",
             },
             json={
-                "from": frm, "to": [to],
+                "from": frm, "to": to_emails,
                 "subject": subject,
                 "text": plain, "html": html,
             },
             timeout=15,
         )
         if resp.status_code in (200, 201):
-            print(f"  ✅ Email sent to {to}")
+            print(f"  ✅ Email sent to {', '.join(to_emails)}")
         else:
             print(f"  ❌ Resend {resp.status_code}: {resp.text}")
             sys.exit(1)
     except requests.RequestException as e:
         print(f"  ❌ Email failed: {e}")
         sys.exit(1)
+
+
+def send_heartbeat_email(movie_info):
+    api_key = RESEND_API_KEY.strip()
+    to_emails = [e.strip() for e in RESEND_TO_EMAIL.split(",") if e.strip()]
+    frm = RESEND_FROM_EMAIL.strip() or "onboarding@resend.dev"
+
+    if not api_key or not to_emails:
+        print("  ⚠️  Skipping heartbeat email — RESEND_API_KEY or RESEND_TO_EMAIL not set.")
+        return
+
+    now_str = datetime.now().strftime("%d %b %Y, %I:%M %p")
+    movie_name = movie_info.get("name", "Movie")
+
+    html = f"""<!doctype html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:24px;font-family:Arial,Helvetica,sans-serif;
+             font-size:14px;color:#333;background:#fff;">
+    <h2 style="margin:0 0 4px 0;font-size:18px;color:#111;">
+        🎫 Ticket Not Yet Opened — {escape(movie_name)}
+    </h2>
+    <p style="margin:0 0 20px 0;font-size:13px;color:#666;">
+        {escape(now_str)}
+    </p>
+    <hr style="border:none;border-top:1px solid #ddd;margin:0 0 20px 0;">
+    <p style="margin:0;font-size:14px;color:#333;">
+        This is a heartbeat email to confirm the BMS Ticket Notifier is running.
+        No ticket booking changes detected yet.
+    </p>
+    <p style="margin:24px 0 0 0;font-size:12px;color:#999;">
+        This is an automated alert from BMS Ticket Notifier.
+    </p>
+</body>
+</html>"""
+
+    plain = f"""Ticket Not Yet Opened — {movie_name}
+
+Checked at: {now_str}
+
+This is a heartbeat email to confirm the BMS Ticket Notifier is running.
+No ticket booking changes detected yet.
+
+This is an automated alert from BMS Ticket Notifier."""
+
+    try:
+        resp = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": frm, "to": to_emails,
+                "subject": f"BMS Heartbeat: Ticket Not Yet Opened — {movie_name}",
+                "text": plain, "html": html,
+            },
+            timeout=15,
+        )
+        if resp.status_code in (200, 201):
+            print(f"  ✅ Heartbeat email sent to {', '.join(to_emails)}")
+        else:
+            print(f"  ❌ Resend {resp.status_code}: {resp.text}")
+    except requests.RequestException as e:
+        print(f"  ❌ Heartbeat email failed: {e}")
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -578,6 +645,11 @@ def main():
 
     print(f"  🎬 {movie_info['name']}  {movie_info['language']}")
 
+    # Send heartbeat email on manual dispatch
+    if BMS_SEND_HEARTBEAT:
+        print("  📨 Manual dispatch — sending heartbeat email...")
+        send_heartbeat_email(movie_info)
+
     # Apply filters
     filtered = filter_shows(
         all_shows,
@@ -590,12 +662,12 @@ def main():
     # Build state & detect changes
     new_state = build_state(filtered, all_dates)
     old_state = load_state()
+    if "last_heartbeat" in old_state:
+        new_state["last_heartbeat"] = old_state["last_heartbeat"]
 
     changes = []
     if old_state:
         changes = detect_changes(old_state, new_state)
-
-    save_state(new_state)
 
     if changes:
         print(f"\n  ⚡ {len(changes)} change(s) detected:")
@@ -605,8 +677,29 @@ def main():
             f"BMS Alert: {movie_info['name']} - {len(changes)} change(s)",
             changes, filtered, movie_info,
         )
+        new_state["last_heartbeat"] = now_str
     else:
         print("  ✅ No changes since last check.")
+        last_heartbeat = new_state.get("last_heartbeat", "")
+        if last_heartbeat:
+            try:
+                last_dt = datetime.strptime(last_heartbeat, "%Y-%m-%d %H:%M:%S")
+                elapsed = (datetime.now() - last_dt).total_seconds() / 60
+                if elapsed >= HEARTBEAT_INTERVAL_MINUTES:
+                    print(f"  📨 Sending heartbeat email (last sent {int(elapsed)} min ago)...")
+                    send_heartbeat_email(movie_info)
+                    new_state["last_heartbeat"] = now_str
+                else:
+                    print(f"  ⏳ Heartbeat email skipped ({int(HEARTBEAT_INTERVAL_MINUTES - elapsed)} min until next)")
+            except ValueError:
+                send_heartbeat_email(movie_info)
+                new_state["last_heartbeat"] = now_str
+        else:
+            print("  📨 Sending first heartbeat email...")
+            send_heartbeat_email(movie_info)
+            new_state["last_heartbeat"] = now_str
+
+    save_state(new_state)
 
     # Print current status
     print(f"\n  Current status ({len(filtered)} shows):")
