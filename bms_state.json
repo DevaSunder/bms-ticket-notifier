@@ -1,13 +1,30 @@
 {
-  "shows": {},
+  "shows": {
+    "PVHC|30752|20260807|PRIME": {
+      "venue": "PVR: Ampa Mall, Nelson Manickam Road",
+      "time": "10:10 PM",
+      "date": "20260807",
+      "cat": "PRIME",
+      "price": "210.98",
+      "status": "3"
+    },
+    "PVHC|30752|20260807|CLASSIC": {
+      "venue": "PVR: Ampa Mall, Nelson Manickam Road",
+      "time": "10:10 PM",
+      "date": "20260807",
+      "cat": "CLASSIC",
+      "price": "61.74",
+      "status": "3"
+    }
+  },
   "dates": {
     "20260805": "AVAILABLE",
     "20260806": "AVAILABLE",
-    "20260807": "AVAILABLE",
-    "20260808": "BOOKABLE",
+    "20260807": "BOOKABLE",
+    "20260808": "AVAILABLE",
     "20260809": "AVAILABLE",
     "20260810": "NOT_OPEN",
     "20260811": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-04 19:15:30"
+  "last_heartbeat": "2026-08-04 21:41:53"
 }
