@@ -63,80 +63,16 @@
       "cat": "CLASSIC",
       "price": "61.74",
       "status": "2"
-    },
-    "PVHR|40288|20260808|PRIME": {
-      "venue": "PVR: Heritage RSL ECR, Chennai",
-      "time": "10:10 PM",
-      "date": "20260808",
-      "cat": "PRIME",
-      "price": "210.98",
-      "status": "3"
-    },
-    "PVHR|40288|20260808|CLASSIC": {
-      "venue": "PVR: Heritage RSL ECR, Chennai",
-      "time": "10:10 PM",
-      "date": "20260808",
-      "cat": "CLASSIC",
-      "price": "61.74",
-      "status": "3"
-    },
-    "PVHR|40314|20260808|PRIME": {
-      "venue": "PVR: Heritage RSL ECR, Chennai",
-      "time": "10:40 PM",
-      "date": "20260808",
-      "cat": "PRIME",
-      "price": "210.98",
-      "status": "3"
-    },
-    "PVHR|40314|20260808|CLASSIC": {
-      "venue": "PVR: Heritage RSL ECR, Chennai",
-      "time": "10:40 PM",
-      "date": "20260808",
-      "cat": "CLASSIC",
-      "price": "61.74",
-      "status": "0"
-    },
-    "PCAN|42871|20260808|PRIME": {
-      "venue": "PVR: VR Chennai, Anna Nagar",
-      "time": "07:25 PM",
-      "date": "20260808",
-      "cat": "PRIME",
-      "price": "210.98",
-      "status": "2"
-    },
-    "PCAN|42871|20260808|CLASSIC": {
-      "venue": "PVR: VR Chennai, Anna Nagar",
-      "time": "07:25 PM",
-      "date": "20260808",
-      "cat": "CLASSIC",
-      "price": "61.74",
-      "status": "3"
-    },
-    "PVHC|30823|20260808|PRIME": {
-      "venue": "PVR: Ampa Mall, Nelson Manickam Road",
-      "time": "10:10 PM",
-      "date": "20260808",
-      "cat": "PRIME",
-      "price": "210.98",
-      "status": "3"
-    },
-    "PVHC|30823|20260808|CLASSIC": {
-      "venue": "PVR: Ampa Mall, Nelson Manickam Road",
-      "time": "10:10 PM",
-      "date": "20260808",
-      "cat": "CLASSIC",
-      "price": "61.74",
-      "status": "2"
     }
   },
   "dates": {
-    "20260807": "AVAILABLE",
-    "20260808": "BOOKABLE",
+    "20260807": "BOOKABLE",
+    "20260808": "AVAILABLE",
     "20260809": "AVAILABLE",
     "20260810": "AVAILABLE",
     "20260811": "AVAILABLE",
     "20260812": "AVAILABLE",
     "20260813": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-07 03:33:54"
+  "last_heartbeat": "2026-08-07 05:22:26"
 }
