@@ -1,5 +1,53 @@
 {
   "shows": {
+    "PVHR|40207|20260807|PRIME": {
+      "venue": "PVR: Heritage RSL ECR, Chennai",
+      "time": "10:10 PM",
+      "date": "20260807",
+      "cat": "PRIME",
+      "price": "210.98",
+      "status": "2"
+    },
+    "PVHR|40207|20260807|CLASSIC": {
+      "venue": "PVR: Heritage RSL ECR, Chennai",
+      "time": "10:10 PM",
+      "date": "20260807",
+      "cat": "CLASSIC",
+      "price": "61.74",
+      "status": "3"
+    },
+    "PVHR|40208|20260807|PRIME": {
+      "venue": "PVR: Heritage RSL ECR, Chennai",
+      "time": "10:40 PM",
+      "date": "20260807",
+      "cat": "PRIME",
+      "price": "210.98",
+      "status": "2"
+    },
+    "PVHR|40208|20260807|CLASSIC": {
+      "venue": "PVR: Heritage RSL ECR, Chennai",
+      "time": "10:40 PM",
+      "date": "20260807",
+      "cat": "CLASSIC",
+      "price": "61.74",
+      "status": "3"
+    },
+    "PVHC|30752|20260807|PRIME": {
+      "venue": "PVR: Ampa Mall, Nelson Manickam Road",
+      "time": "10:10 PM",
+      "date": "20260807",
+      "cat": "PRIME",
+      "price": "210.98",
+      "status": "2"
+    },
+    "PVHC|30752|20260807|CLASSIC": {
+      "venue": "PVR: Ampa Mall, Nelson Manickam Road",
+      "time": "10:10 PM",
+      "date": "20260807",
+      "cat": "CLASSIC",
+      "price": "61.74",
+      "status": "0"
+    },
     "PVHR|40288|20260808|PRIME": {
       "venue": "PVR: Heritage RSL ECR, Chennai",
       "time": "10:10 PM",
@@ -74,5 +122,5 @@
     "20260812": "AVAILABLE",
     "20260813": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-07 14:39:57"
+  "last_heartbeat": "2026-08-07 15:38:12"
 }
