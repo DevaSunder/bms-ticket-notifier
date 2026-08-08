@@ -46,7 +46,7 @@
       "date": "20260808",
       "cat": "CLASSIC",
       "price": "61.74",
-      "status": "2"
+      "status": "1"
     },
     "PVHC|30823|20260808|PRIME": {
       "venue": "PVR: Ampa Mall, Nelson Manickam Road",
@@ -74,5 +74,5 @@
     "20260813": "NOT_OPEN",
     "20260814": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-08 09:58:22"
+  "last_heartbeat": "2026-08-08 10:44:06"
 }
