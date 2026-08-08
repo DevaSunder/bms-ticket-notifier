@@ -1,30 +1,13 @@
 {
-  "shows": {
-    "PVHR|40314|20260808|PRIME": {
-      "venue": "PVR: Heritage RSL ECR, Chennai",
-      "time": "10:40 PM",
-      "date": "20260808",
-      "cat": "PRIME",
-      "price": "210.98",
-      "status": "2"
-    },
-    "PVHR|40314|20260808|CLASSIC": {
-      "venue": "PVR: Heritage RSL ECR, Chennai",
-      "time": "10:40 PM",
-      "date": "20260808",
-      "cat": "CLASSIC",
-      "price": "61.74",
-      "status": "0"
-    }
-  },
+  "shows": {},
   "dates": {
-    "20260808": "BOOKABLE",
-    "20260809": "AVAILABLE",
+    "20260809": "BOOKABLE",
     "20260810": "AVAILABLE",
     "20260811": "AVAILABLE",
     "20260812": "AVAILABLE",
     "20260813": "NOT_OPEN",
-    "20260814": "NOT_OPEN"
+    "20260814": "NOT_OPEN",
+    "20260815": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-08 17:52:40"
+  "last_heartbeat": "2026-08-08 18:45:45"
 }
