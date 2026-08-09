@@ -10,6 +10,8 @@ import os
 import re
 import sys
 import json
+import time
+import random
 from html import escape
 from datetime import datetime
 from dataclasses import dataclass, field
@@ -134,24 +136,35 @@ API_URL = (
     "showtimes-by-event/primary-dynamic"
 )
 
+_session = None
+
+
+def _get_session():
+    global _session
+    if _session is None:
+        _session = requests.Session()
+        _session.headers.update({
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/145.0.0.0 Safari/537.36"
+            ),
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "sec-ch-ua": '"Chromium";v="145", "Not:A-Brand";v="99"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+        })
+    return _session
+
 
 def fetch_bms(event_code, date_code, region_code, region_slug,
-              lat, lon, geohash):
+              lat, lon, geohash, max_retries=3):
     headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/145.0.0.0 Safari/537.36"
-        ),
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "en-US,en;q=0.9",
         "Referer": (
             f"https://in.bookmyshow.com/movies/"
             f"{region_slug}/buytickets/{event_code}/"
         ),
-        "sec-ch-ua": '"Chromium";v="145", "Not:A-Brand";v="99"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"macOS"',
         "x-app-code": "WEB",
         "x-region-code": region_code,
         "x-region-slug": region_slug,
@@ -170,14 +183,30 @@ def fetch_bms(event_code, date_code, region_code, region_slug,
         "memberId": "", "lsId": "", "subCode": "",
         "lat": lat, "lon": lon,
     }
-    try:
-        resp = requests.get(API_URL, headers=headers,
-                            params=params, timeout=15)
-        if resp.status_code == 200:
-            return resp.json()
-        print(f"  HTTP {resp.status_code}")
-    except requests.RequestException as e:
-        print(f"  Request failed: {e}")
+
+    session = _get_session()
+
+    for attempt in range(max_retries):
+        if attempt > 0:
+            delay = (2 ** attempt) + random.uniform(0, 1)
+            print(f"  Retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries})...")
+            time.sleep(delay)
+
+        try:
+            resp = session.get(API_URL, headers=headers,
+                               params=params, timeout=15)
+            if resp.status_code == 200:
+                return resp.json()
+            if resp.status_code == 403:
+                print(f"  HTTP 403 (attempt {attempt + 1}/{max_retries})")
+                continue
+            print(f"  HTTP {resp.status_code}")
+            return None
+        except requests.RequestException as e:
+            print(f"  Request failed: {e}")
+            if attempt == max_retries - 1:
+                return None
+
     return None
 
 
@@ -278,10 +307,11 @@ def filter_shows(shows, theatre_filter, time_periods, date_codes):
                     if d.strip()) if date_codes else set()
 
     for s in shows:
-        # Theatre filter
+        # Theatre filter (checks venue_name AND screen_attr)
         if kws:
             name_lower = s.venue_name.lower()
-            if not any(k in name_lower for k in kws):
+            attr_lower = s.screen_attr.lower()
+            if not any(k in name_lower or k in attr_lower for k in kws):
                 continue
 
         # Date filter
