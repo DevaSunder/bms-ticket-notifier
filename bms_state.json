@@ -1,13 +1,13 @@
 {
   "shows": {},
   "dates": {
-    "20260810": "BOOKABLE",
-    "20260811": "AVAILABLE",
+    "20260811": "BOOKABLE",
     "20260812": "AVAILABLE",
     "20260813": "AVAILABLE",
     "20260814": "NOT_OPEN",
     "20260815": "NOT_OPEN",
-    "20260816": "NOT_OPEN"
+    "20260816": "NOT_OPEN",
+    "20260817": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-10 17:13:32"
+  "last_heartbeat": "2026-08-10 18:07:45"
 }
