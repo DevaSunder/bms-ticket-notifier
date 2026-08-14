@@ -4,10 +4,10 @@
     "20260814": "AVAILABLE",
     "20260815": "BOOKABLE",
     "20260816": "AVAILABLE",
-    "20260817": "NOT_OPEN",
-    "20260818": "NOT_OPEN",
-    "20260819": "NOT_OPEN",
+    "20260817": "AVAILABLE",
+    "20260818": "AVAILABLE",
+    "20260819": "AVAILABLE",
     "20260820": "NOT_OPEN"
   },
-  "last_heartbeat": "2026-08-14 07:44:32"
+  "last_heartbeat": "2026-08-14 08:51:54"
 }
